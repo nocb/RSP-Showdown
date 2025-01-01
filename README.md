@@ -6,7 +6,8 @@
   <a href="https://scaffold-stark-demo.vercel.app/debug">Demo</a>
 </h4>
 
-🧪 基于区块链starknet 的石头剪刀布，分歧终端机，无需第三方参与，公平透明，一个学习starknet的好例子。fork 自 https://github.com/Scaffold-Stark/scaffold-stark-2 项目
+🧪 基于区块链starknet 的石头剪刀布，分歧终端机，无需第三方参与，公平透明，一个学习starknet的好例子。fork 自 https://github.com/Scaffold-Stark/scaffold-stark-2 项目 
+由cuphead 团队创作， hansen、sixgod 
 
 ⚙️ Built using NextJS, Starknet.js, Scarb, Starknet-React, Starknet Foundry and Typescript.
 
