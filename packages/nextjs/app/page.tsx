@@ -7,19 +7,12 @@ const Home = () => {
     <div className="flex items-center flex-col flex-grow pt-10">
       <div className="px-5">
         <h1 className="text-center">
-          <span className="block text-2xl mb-2">Welcome to</span>
-          <span className="block text-4xl font-bold">Scaffold-Stark 2</span>
+          {/* <span className="block text-2xl mb-2">Welcome to</span> */}
+          <span className="block text-4xl font-bold">Rock Scissors Paper Showdown</span>
         </h1>
-        <ConnectedAddress />
+        {/* <ConnectedAddress /> */}
         <p className="text-center text-lg">
-          Edit your smart contract{" "}
-          <code className="bg-underline italic text-base font-bold max-w-full break-words break-all inline-block">
-            YourContract.cairo
-          </code>{" "}
-          in{" "}
-          <code className="bg-underline italic text-base font-bold max-w-full break-words break-all inline-block">
-            packages/snfoundry/contracts/src
-          </code>
+        Have a fair showdown on the blockchain with your friends. 
         </p>
       </div>
 
@@ -33,12 +26,12 @@ const Home = () => {
               width={26}
               height={30}
             ></Image>
-            <p>
-              Tinker with your smart contract using the{" "}
+            <p>   1 号桌子  
+              {/* Tinker with your smart contract using the{" "}
               <Link href="/debug" passHref className="link">
                 Debug Contracts
               </Link>{" "}
-              tab.
+              tab. */}
             </p>
           </div>
           <div className="flex flex-col bg-base-100 relative text-[12px] px-10 py-10 text-center items-center max-w-xs rounded-3xl border border-gradient">
@@ -49,11 +42,43 @@ const Home = () => {
               width={20}
               height={32}
             ></Image>
-            <p>
-              Play around with Multiwrite transactions using
-              useScaffoldMultiWrite() hook
-            </p>
+            <p> 2 号桌子 </p>
           </div>
+
+          <div className="flex flex-col bg-base-100 relative text-[12px] px-10 py-10 text-center items-center max-w-xs rounded-3xl border border-gradient">
+            <div className="trapeze"></div>
+            <Image
+              src="/explorer-icon.svg"
+              alt="icon"
+              width={20}
+              height={32}
+            ></Image>
+            <p> 3 号桌子 </p>
+          </div>
+
+          <div className="flex flex-col bg-base-100 relative text-[12px] px-10 py-10 text-center items-center max-w-xs rounded-3xl border border-gradient">
+            <div className="trapeze"></div>
+            <Image
+              src="/explorer-icon.svg"
+              alt="icon"
+              width={20}
+              height={32}
+            ></Image>
+            <p> 4 号桌子 </p>
+          </div>
+
+
+          <div className="flex flex-col bg-base-100 relative text-[12px] px-10 py-10 text-center items-center max-w-xs rounded-3xl border border-gradient">
+            <div className="trapeze"></div>
+            <Image
+              src="/explorer-icon.svg"
+              alt="icon"
+              width={20}
+              height={32}
+            ></Image>
+            <p> 5 号桌子 </p>
+          </div>
+
         </div>
       </div>
     </div>

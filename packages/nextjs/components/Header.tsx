@@ -152,15 +152,15 @@ export const Header = () => {
         >
           <div className="flex relative w-10 h-10">
             <Image
-              alt="SE2 logo"
+              alt="my logo"
               className="cursor-pointer"
               fill
-              src="/logo.svg"
+              src="/logo.png"
             />
           </div>
           <div className="flex flex-col">
-            <span className="font-bold leading-tight">Scaffold-Stark</span>
-            <span className="text-xs">Starknet dev stack</span>
+            <span className="font-bold leading-tight">RSP-Showdown</span>
+            <span className="text-xs">Let's have a showdown</span>
           </div>
         </Link>
         <ul className="hidden lg:flex lg:flex-nowrap menu menu-horizontal px-1 gap-2">
