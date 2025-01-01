@@ -1,4 +1,4 @@
-# 🏗 Scaffold-Stark
+# 🏗 RSP-Showdown
 
 <h4 align="center">
   <a href="https://docs.scaffoldstark.com/">Documentation</a> |
@@ -6,17 +6,10 @@
   <a href="https://scaffold-stark-demo.vercel.app/debug">Demo</a>
 </h4>
 
-🧪 An open-source, up-to-date toolkit for building decentralized applications (dapps) on Starknet blockchain. It's designed to make it easier for developers to create and deploy smart contracts and build user interfaces that interact with those contracts.
+🧪 基于区块链starknet 的石头剪刀布，分歧终端机，无需第三方参与，公平透明，一个学习starknet的好例子。fork 自 https://github.com/Scaffold-Stark/scaffold-stark-2 项目
 
 ⚙️ Built using NextJS, Starknet.js, Scarb, Starknet-React, Starknet Foundry and Typescript.
 
-- ✅ **Contract Fast Reload**: Your frontend auto-adapts to your smart contracts as you deploy them.
-- 🪝 [**Custom hooks**](https://docs.scaffoldstark.com/hooks/): Collection of React hooks wrapper around [starknet-react](https://starknet-react.com/) to simplify interactions with smart contracts with typescript autocompletion.
-- 🧱 [**Components**](https://docs.scaffoldstark.com/components): Collection of common web3 components to quickly build your frontend.
-- 🔥 **Burner Wallet & Prefunded Account**: Quickly test your application with a burner wallet and prefunded accounts.
-- 🔐 **Integration with Wallet Providers**: Connect to different wallet providers and interact with Starknet network.
-
-![Debug Contracts tab](./packages/nextjs/public/debug-image.png)
 
 ## Requirements
 
@@ -29,42 +22,6 @@ Before you begin, you need to install the following tools:
 - [asdf](https://asdf-vm.com/guide/getting-started.html)
 - [Cairo 1.0 extension for VSCode](https://marketplace.visualstudio.com/items?itemName=starkware.cairo1)
 
-### Starknet-devnet version
-
-To ensure the proper functioning of scaffold-stark, your local `starknet-devnet` version must be `0.2.3`. To accomplish this, first check your local starknet-devnet version:
-
-```sh
-starknet-devnet --version
-```
-
-If your local starknet-devnet version is not `0.2.3`, you need to install it.
-
-- Install Starknet-devnet `0.2.3` via `asdf` ([instructions](https://github.com/gianalarcon/asdf-starknet-devnet/blob/main/README.md)).
-
-### Scarb version
-
-To ensure the proper functioning of scaffold-stark, your local `Scarb` version must be `2.9.2`. To accomplish this, first check your local Scarb version:
-
-```sh
-scarb --version
-```
-
-If your local Scarb version is not `2.9.2`, you need to install it.
-
-- Install Scarb `2.9.2` via `asdf` ([instructions](https://docs.swmansion.com/scarb/download.html#install-via-asdf)).
-
-### Starknet Foundry version
-
-To ensure the proper functioning of the tests on scaffold-stark, your Starknet Foundry version must be 0.31.0. To accomplish this, first check your Starknet Foundry version:
-
-```sh
-snforge --version
-```
-
-If your Starknet Foundry version is not `0.34.0`, you need to install it.
-
-- Install Starknet Foundry `0.34.0` via `asdf` ([instructions](https://foundry-rs.github.io/starknet-foundry/getting-started/installation.html#installation-via-asdf)).
-
 ## Compatible versions
 
 - Starknet-devnet - v0.2.3
@@ -75,17 +32,15 @@ If your Starknet Foundry version is not `0.34.0`, you need to install it.
 
 ## Quickstart with Starknet-Devnet
 
-To get started with Scaffold-Stark, follow the steps below:
+To get started with RSP, follow the steps below:
 
 1. Clone this repo and install dependencies
 
 ```bash
-git clone https://github.com/Scaffold-Stark/scaffold-stark-2.git
-cd scaffold-stark-2
 yarn install
 ```
 
-2. Run a local network in the first terminal.
+2. Run a local network in the first terminal. 如果你直接在Sepolia链上开发，可以不启动这个。
 
 ```bash
 yarn chain
@@ -95,7 +50,7 @@ yarn chain
 
 This command starts a local Starknet network using Devnet. The network runs on your local machine and can be used for testing and development. You can customize the network configuration in `scaffold.config.ts` for your nextjs app.
 
-3. On a second terminal, deploy the sample contract:
+3. On a second terminal, deploy the sample contract:部署合约 
 
 ```bash
 yarn deploy
@@ -168,16 +123,6 @@ You have to paste the endpoint and body in the API platform and click on the `Se
 ![rpc-version](./packages/nextjs/public/rpc-version.png)
 </details>
 
-## **What's next**
-
-- Edit your smart contract `YourContract.cairo` in `packages/snfoundry/contracts/src`
-- Edit your frontend homepage at `packages/nextjs/app/page.tsx`. For guidance on [routing](https://nextjs.org/docs/app/building-your-application/routing/defining-routes) and configuring [pages/layouts](https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts) checkout the Next.js documentation.
-- Edit your deployment scripts in `packages/snfoundry/script-ts/deploy.ts`
-- Edit your smart contract tests in `packages/snfoundry/contracts/src/test`. To run tests use `yarn test`
-- You can write unit tests for your Next.js app! Run them with one the following scripts below.
-  - `yarn test:nextjs` to run regular tests with watch mode
-  - `yarn test:nextjs run` to run regular tests without watch mode
-  - `yarn test:nextjs run --coverage` to run regular tests without watch mode with coverage
 
 ## Documentation
 
@@ -185,29 +130,3 @@ Visit our [docs](https://docs.scaffoldstark.com/) to learn how to start building
 
 To know more about its features, check out our [website](https://scaffoldstark.com)
 
-#### External Image Source Configuration
-
-In the `next.config.mjs`, we've set up external image sources using `remotePatterns` to allow fetching assets from specific domains. This is particularly useful for loading images or assets from external servers or services.
-
-```javascript
-remotePatterns: [
-  // External image source for StarkNet ID identicons
-  {
-    protocol: "https",
-    hostname: "identicon.starknet.id",
-    pathname: "/**", // Allows all paths under this domain
-  },
-  // External image source for images hosted on Starkurabu
-  {
-    protocol: "https",
-    hostname: "img.starkurabu.com",
-    pathname: "/**",
-  },
-],
-```
-
-## Contributing to Scaffold-Stark
-
-We welcome contributions to Scaffold-Stark!
-
-Please see [CONTRIBUTING.MD](https://github.com/Scaffold-Stark/scaffold-stark-2/blob/main/CONTRIBUTING.md) for more information and guidelines for contributing to Scaffold-Stark.
