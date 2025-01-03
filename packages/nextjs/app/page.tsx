@@ -17,68 +17,37 @@ const Home = () => {
       </div>
 
       <div className="bg-container flex-grow w-full mt-16 px-8 py-12">
-        <div className="flex justify-center items-center gap-12 flex-col sm:flex-row">
-          <div className="flex flex-col bg-base-100 relative text-[12px] px-10 py-10 text-center items-center max-w-xs rounded-3xl border border-gradient">
-            <div className="trapeze"></div>
-            <Image
-              src="/debug-icon.svg"
-              alt="icon"
-              width={26}
-              height={30}
-            ></Image>
-            <p>   1 号桌子  
-              {/* Tinker with your smart contract using the{" "}
-              <Link href="/debug" passHref className="link">
-                Debug Contracts
-              </Link>{" "}
-              tab. */}
-            </p>
-          </div>
-          <div className="flex flex-col bg-base-100 relative text-[12px] px-10 py-10 text-center items-center max-w-xs rounded-3xl border border-gradient">
-            <div className="trapeze"></div>
-            <Image
-              src="/explorer-icon.svg"
-              alt="icon"
-              width={20}
-              height={32}
-            ></Image>
-            <p> 2 号桌子 </p>
-          </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {[1, 2, 3, 4, 5, 6].map((tableNum) => (
+            <div key={tableNum} className="flex flex-col bg-base-100 relative text-center items-center rounded-3xl border border-gradient p-6">
+              <div className="flex items-center justify-center gap-8 w-full">
+                <Image
+                  src="/avatar-placeholder.png"
+                  alt="player 1"
+                  width={50}
+                  height={50}
+                  className="rounded-full"
+                />
+                
+                <div className="relative">
+                  <div className="w-28 h-28 bg-teal-400 rounded-2xl flex items-center justify-center shadow-xl">
+                    <span className="text-6xl font-bold text-white drop-shadow-md">
+                      {tableNum}
+                    </span>
+                  </div>
+                  <div className="w-28 h-4 bg-teal-600 absolute -bottom-1 left-0 rounded-b-lg"></div>
+                </div>
 
-          <div className="flex flex-col bg-base-100 relative text-[12px] px-10 py-10 text-center items-center max-w-xs rounded-3xl border border-gradient">
-            <div className="trapeze"></div>
-            <Image
-              src="/explorer-icon.svg"
-              alt="icon"
-              width={20}
-              height={32}
-            ></Image>
-            <p> 3 号桌子 </p>
-          </div>
-
-          <div className="flex flex-col bg-base-100 relative text-[12px] px-10 py-10 text-center items-center max-w-xs rounded-3xl border border-gradient">
-            <div className="trapeze"></div>
-            <Image
-              src="/explorer-icon.svg"
-              alt="icon"
-              width={20}
-              height={32}
-            ></Image>
-            <p> 4 号桌子 </p>
-          </div>
-
-
-          <div className="flex flex-col bg-base-100 relative text-[12px] px-10 py-10 text-center items-center max-w-xs rounded-3xl border border-gradient">
-            <div className="trapeze"></div>
-            <Image
-              src="/explorer-icon.svg"
-              alt="icon"
-              width={20}
-              height={32}
-            ></Image>
-            <p> 5 号桌子 </p>
-          </div>
-
+                <Image
+                  src="/avatar-placeholder.png"
+                  alt="player 2"
+                  width={50}
+                  height={50}
+                  className="rounded-full"
+                />
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
