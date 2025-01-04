@@ -20,9 +20,15 @@ const Home = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {[1, 2, 3, 4, 5, 6].map((tableNum) => (
             <div key={tableNum} className="flex flex-col bg-base-100 relative text-center items-center rounded-3xl border border-gradient p-6">
+              <div className="absolute top-2 right-2 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                <span className="text-sm font-bold text-white">
+                  #{tableNum}
+                </span>
+              </div>
+
               <div className="flex items-center justify-center gap-8 w-full">
                 <Image
-                  src="/avatar-placeholder.png"
+                  src="/myhead.jpg"
                   alt="player 1"
                   width={50}
                   height={50}
@@ -31,15 +37,20 @@ const Home = () => {
                 
                 <div className="relative">
                   <div className="w-28 h-28 bg-teal-400 rounded-2xl flex items-center justify-center shadow-xl">
-                    <span className="text-6xl font-bold text-white drop-shadow-md">
-                      {tableNum}
-                    </span>
+                    <div className="flex flex-col items-center">
+                      <span className="text-4xl font-bold text-white drop-shadow-md">
+                        0.1
+                      </span>
+                      <span className="text-sm text-white/90">
+                        ETH
+                      </span>
+                    </div>
                   </div>
                   <div className="w-28 h-4 bg-teal-600 absolute -bottom-1 left-0 rounded-b-lg"></div>
                 </div>
 
                 <Image
-                  src="/avatar-placeholder.png"
+                  src="/logo_alchemy.png"
                   alt="player 2"
                   width={50}
                   height={50}
