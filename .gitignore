@@ -13,6 +13,7 @@ package-lock.json
 !.yarn/versions
 .eslintcache
 .DS_Store
+*.lock
 
 # debug
 npm-debug.log*

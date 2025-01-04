@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ConnectedAddress } from "~~/components/ConnectedAddress";
+import { useRouter } from "next/navigation";
 
 const Home = () => {
   return (
@@ -19,7 +20,11 @@ const Home = () => {
       <div className="bg-container flex-grow w-full mt-16 px-8 py-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {[1, 2, 3, 4, 5, 6].map((tableNum) => (
-            <div key={tableNum} className="flex flex-col bg-base-100 relative text-center items-center rounded-3xl border border-gradient p-6">
+            <Link 
+              href={`/table/${tableNum}`} 
+              key={tableNum} 
+              className="flex flex-col bg-base-100 relative text-center items-center rounded-3xl border border-gradient p-6 hover:bg-base-200 transition-colors cursor-pointer"
+            >
               <div className="absolute top-2 right-2 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
                 <span className="text-sm font-bold text-white">
                   #{tableNum}
@@ -39,10 +44,10 @@ const Home = () => {
                   <div className="w-28 h-28 bg-teal-400 rounded-2xl flex items-center justify-center shadow-xl">
                     <div className="flex flex-col items-center">
                       <span className="text-4xl font-bold text-white drop-shadow-md">
-                        0.1
+                        10
                       </span>
                       <span className="text-sm text-white/90">
-                        ETH
+                        STRK
                       </span>
                     </div>
                   </div>
@@ -57,7 +62,7 @@ const Home = () => {
                   className="rounded-full"
                 />
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
