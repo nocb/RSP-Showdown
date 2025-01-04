@@ -181,10 +181,28 @@ const TablePage = () => {
                       {cards.find(c => c.type === selectedCard)?.emoji}
                     </span>
                   ) : (
-                    <div className="w-full h-full bg-gray-300 flex items-center justify-center rounded-lg">
-                      <span className="text-8xl transform hover:scale-110 transition-transform">
-                        🎴
-                      </span>
+                    <div className="w-full h-full rounded-lg overflow-hidden relative">
+                      {/* 斜条纹背景 */}
+                      <div 
+                        className="absolute inset-0" 
+                        style={{
+                          background: `repeating-linear-gradient(
+                            45deg,
+                            #2C3E50,
+                            #2C3E50 10px,
+                            #34495E 10px,
+                            #34495E 20px
+                          )`
+                        }}
+                      />
+                      {/* 卡牌中心图案 */}
+                      <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-white/10 to-transparent">
+    
+                          <span className="text-8xl">
+                            🃏
+                          </span>
+                    
+                      </div>
                     </div>
                   )
                 ) : (
