@@ -82,7 +82,7 @@ const Home = async () => {
                     <div className="w-28 h-28 bg-teal-400 rounded-2xl flex items-center justify-center shadow-xl">
                       <div className="flex flex-col items-center">
                         <span className="text-4xl font-bold text-white drop-shadow-md">
-                          {table.stake.toFixed(2)}
+                          {table.stake.toFixed(0)}
                         </span>
                         <span className="text-sm text-white/90">
                           STRK
