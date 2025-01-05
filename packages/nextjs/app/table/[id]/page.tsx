@@ -3,7 +3,8 @@
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import type { TableInfo } from "~~/utils/db";
 
 // 定义游戏状态类型
 type GameStatus = "waiting" | "selecting" | "selected" | "revealed";
@@ -13,7 +14,10 @@ const TablePage = () => {
   const params = useParams();
   const tableId = params.id;
   
-  // 状态管理
+  // 所有的 hooks 必须在顶层声明
+  const [tableInfo, setTableInfo] = useState<TableInfo | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [gameStatus, setGameStatus] = useState<GameStatus>("selecting");
   const [selectedCard, setSelectedCard] = useState<CardType>(null);
   const [opponentSelected, setOpponentSelected] = useState(false);
@@ -21,25 +25,32 @@ const TablePage = () => {
   const [hasPlayed, setHasPlayed] = useState(false);
   const [isCardFaceUp, setIsCardFaceUp] = useState(true);
 
-  // 模拟数据，实际应从合约获取
-  const mockData = {
-    opponent: {
-      address: "0x003c**2E12",
-      avatar: "/myhead.jpg",
-    },
-    player: {
-      address: "0x003c**2E12",
-      avatar: "/logo_alchemy.png",
-    },
-    stake: 10,
-  };
-
   // 卡牌数据
   const cards = [
     { type: "rock", name: "石头", emoji: "🪨" },
     { type: "scissors", name: "剪刀", emoji: "✂️" },
     { type: "paper", name: "布", emoji: "📄" },
   ] as const;
+
+  // 获取桌子信息
+  useEffect(() => {
+    const fetchTableInfo = async () => {
+      try {
+        const response = await fetch(`/api/table/${tableId}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch table info');
+        }
+        const data = await response.json();
+        setTableInfo(data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTableInfo();
+  }, [tableId]);
 
   // 获取游戏状态提示文本
   const getStatusText = () => {
@@ -67,24 +78,40 @@ const TablePage = () => {
   // 处理出牌
   const handlePlay = () => {
     if (!selectedCard) return;
-    
-    // TODO: 调用合约提交选择
-    // 模拟合约调用成功后更新状态
     setTimeout(() => {
       setGameStatus("selected");
       setHasPlayed(true);
-      setIsCardFaceUp(false); // 出牌后显示背面
+      setIsCardFaceUp(false);
     }, 500);
   };
 
   // 处理开牌
   const handleReveal = () => {
     if (gameStatus !== "selected" || !opponentSelected) return;
-    // TODO: 调用合约开牌
     setGameStatus("revealed");
-    setIsCardFaceUp(true); // 开牌后显示正面
+    setIsCardFaceUp(true);
   };
 
+  // 显示加载状态
+  if (loading) {
+    return <div className="flex items-center justify-center h-screen">Loading...</div>;
+  }
+
+  // 显示错误状态
+  if (error || !tableInfo) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="text-center">
+          <p className="text-red-500 mb-4">{error || 'Table not found'}</p>
+          <Link href="/" className="btn btn-outline">
+            返回大厅
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // 渲染主界面
   return (
     <div className="flex flex-col items-center flex-grow pt-10">
       {/* 顶部操作区 */}
@@ -106,39 +133,58 @@ const TablePage = () => {
           <div className="flex items-center justify-between mb-12">
             {/* 对手信息 */}
             <div className="flex flex-col items-center gap-2">
-              <span className="text-sm opacity-80">对手地址：{mockData.opponent.address}</span>
-              <Image
-                src={mockData.opponent.avatar}
-                alt="对手头像"
-                width={80}
-                height={80}
-                className="rounded-full border-4 border-base-300"
-              />
-              {opponentSelected && (
-                <span className="badge badge-success">已出牌</span>
+              <span className="text-sm opacity-80">
+                {tableInfo.player_a_address ? 
+                  `${tableInfo.player_a_address.slice(0, 6)}...${tableInfo.player_a_address.slice(-4)}` : 
+                  '等待加入'
+                }
+              </span>
+              {tableInfo.player_a_address ? (
+                <Image
+                  src={`https://api.dicebear.com/9.x/adventurer/svg?seed=${tableInfo.player_a_address}`}
+                  alt="玩家A头像"
+                  width={80}
+                  height={80}
+                  className="rounded-full border-4 border-base-300"
+                />
+              ) : (
+                <div className="w-20 h-20 rounded-full bg-base-300 flex items-center justify-center">
+                  <span className="text-2xl opacity-30">?</span>
+                </div>
               )}
             </div>
 
             {/* 中间对战信息 */}
             <div className="flex flex-col items-center gap-4">
               <div className="text-3xl font-bold text-primary-500">
-                {mockData.stake} 元
+                {tableInfo.stake} STRK
               </div>
               <div className="text-4xl font-bold text-white">VS</div>
+              <div className={`badge ${tableInfo.status === 'idle' ? 'badge-success' : 'badge-warning'}`}>
+                {tableInfo.status === 'idle' ? '空闲' : '对战中'}
+              </div>
             </div>
 
-            {/* 我的信息 */}
+            {/* 玩家B信息 */}
             <div className="flex flex-col items-center gap-2">
-              <span className="text-sm opacity-80">我的地址：{mockData.player.address}</span>
-              <Image
-                src={mockData.player.avatar}
-                alt="我的头像"
-                width={80}
-                height={80}
-                className="rounded-full border-4 border-base-300"
-              />
-              {hasPlayed && (
-                <span className="badge badge-success">已出牌</span>
+              <span className="text-sm opacity-80">
+                {tableInfo.player_b_address ? 
+                  `${tableInfo.player_b_address.slice(0, 6)}...${tableInfo.player_b_address.slice(-4)}` : 
+                  '等待加入'
+                }
+              </span>
+              {tableInfo.player_b_address ? (
+                <Image
+                  src={`https://api.dicebear.com/9.x/adventurer/svg?seed=${tableInfo.player_b_address}`}
+                  alt="玩家B头像"
+                  width={80}
+                  height={80}
+                  className="rounded-full border-4 border-base-300"
+                />
+              ) : (
+                <div className="w-20 h-20 rounded-full bg-base-300 flex items-center justify-center">
+                  <span className="text-2xl opacity-30">?</span>
+                </div>
               )}
             </div>
           </div>

@@ -140,4 +140,42 @@ export const savePlayerInfo = async (address: string) => {
     console.error('Database Error:', error);
     throw new Error('Failed to save player info');
   }
-}; 
+};
+
+// 获取单个桌子的详细信息
+export const getTableById = cache(async (tableId: number): Promise<TableInfo | null> => {
+  try {
+    const { rows } = await sql`
+      SELECT 
+        table_id, 
+        stake::integer as stake, 
+        player_a_avatar,
+        player_a_address,
+        player_b_avatar,
+        player_b_address,
+        status
+      FROM rsp_table
+      WHERE table_id = ${tableId};
+    `;
+
+    if (rows.length === 0) {
+      return null;
+    }
+
+    // 转换数据确保类型正确
+    const table = {
+      table_id: Number(rows[0].table_id),
+      stake: Number(rows[0].stake),
+      player_a_avatar: rows[0].player_a_avatar,
+      player_a_address: rows[0].player_a_address,
+      player_b_avatar: rows[0].player_b_avatar,
+      player_b_address: rows[0].player_b_address,
+      status: rows[0].status as 'idle' | 'in_use'
+    };
+
+    return table;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch table data');
+  }
+}); 
