@@ -95,7 +95,7 @@ export const AddressInfoDropdown = ({
                 height={30}
               />
             ) : (
-              <BlockieAvatar address={address} size={28} ensImage={ensAvatar} />
+              <BlockieAvatar address={address} size={36} ensImage={ensAvatar} />
             )}
           </div>
           <span className="ml-2 mr-2 text-sm">

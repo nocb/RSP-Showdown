@@ -13,6 +13,7 @@ import { Address } from "@starknet-react/chains";
 import { useEffect, useMemo, useState } from "react";
 import ConnectModal from "./ConnectModal";
 import scaffoldConfig from "~~/scaffold.config";
+import { savePlayerInfo } from "~~/utils/db";
 
 /**
  * Custom Connect Button (watch balance + custom design)
@@ -43,6 +44,35 @@ export const CustomConnectButton = () => {
       getChainId();
     }
   }, [account]);
+
+  // 监听钱包连接状态
+  useEffect(() => {
+    const initPlayer = async () => {
+      if (status === "connected" && accountAddress) {
+        try {
+          console.log("Saving player info for address:", accountAddress);
+          const response = await fetch('/api/player', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ address: accountAddress }),
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to save player info');
+          }
+
+          const data = await response.json();
+          console.log('Player info saved:', data);
+        } catch (error) {
+          console.error('Failed to save player info:', error);
+        }
+      }
+    };
+
+    initPlayer();
+  }, [status, accountAddress]);  // 当状态或地址改变时触发
 
   if (status === "disconnected") return <ConnectModal />;
   // Skip wrong network check if using a fork

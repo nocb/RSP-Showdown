@@ -85,28 +85,28 @@ export const getTables = cache(async (): Promise<TableInfo[]> => {
   }
 });
 
-// 生成玩家头像的函数（使用地址生成独特的头像URL）
+// 生成玩家头像的函数
 const generateAvatarUrl = (address: string) => {
-  // 这里使用 dicebear 服务生成头像
   return `https://api.dicebear.com/7.x/pixel-art/svg?seed=${address}`;
 };
 
-// 保存或更新玩家信息
-export const savePlayerInfo = cache(async (address: string): Promise<PlayerInfo> => {
+// 保存玩家信息的函数
+export const savePlayerInfo = async (address: string) => {
   try {
     // 首先检查玩家是否已存在
     const { rows: existingPlayer } = await sql`
-      SELECT * FROM rsp_player 
+      SELECT player_address FROM rsp_player 
       WHERE player_address = ${address};
     `;
 
     if (existingPlayer.length > 0) {
-      console.log('Player already exists:', existingPlayer[0]);
-      return existingPlayer[0] as PlayerInfo;
+      console.log('Player already exists:', address);
+      return { message: 'Player already exists' };
     }
 
     // 如果玩家不存在，创建新玩家记录
-    const avatar = generateAvatarUrl(address);
+    const nickname = `Player_${address.slice(0, 6)}`;
+
     const { rows: newPlayer } = await sql`
       INSERT INTO rsp_player (
         player_address,
@@ -121,23 +121,23 @@ export const savePlayerInfo = cache(async (address: string): Promise<PlayerInfo>
         created_at
       ) VALUES (
         ${address},
-        ${avatar},
-        ${address.slice(0, 6)}, -- 使用地址前6位作为默认昵称
-        0,                      -- total_games
-        0,                      -- wins
-        0,                      -- losses
-        0,                      -- draws
-        0.00,                   -- win_rate
-        null,                   -- ranking
+        ' ',
+        ${nickname},
+        0,          -- total_games
+        0,          -- wins
+        0,          -- losses
+        0,          -- draws
+        0.00,       -- win_rate
+        null,       -- ranking
         NOW()
       )
       RETURNING *;
     `;
 
     console.log('New player created:', newPlayer[0]);
-    return newPlayer[0] as PlayerInfo;
+    return newPlayer[0];
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to save player info');
   }
-}); 
+}; 
