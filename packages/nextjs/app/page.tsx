@@ -2,6 +2,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { getTables, TableInfo } from "~~/utils/db";
 
+
+
+const generateAvatarUrl = (address: string) => {
+  return `https://api.dicebear.com/9.x/adventurer/svg?seed=${address}`;   //  lorelei
+};
 // 渲染玩家头像的组件
 const PlayerAvatar = ({ avatar, address }: { avatar: string | null; address: string | null }) => {
   if (!avatar || !address) {
@@ -17,9 +22,10 @@ const PlayerAvatar = ({ avatar, address }: { avatar: string | null; address: str
       <Image
         src={avatar}
         alt="player"
-        width={50}
-        height={50}
-        className="rounded-full"
+        width={70}
+        height={70}
+        // className="rounded-full"
+        className="rounded-full border-2 border-base-300"
       />
       {/* 悬停显示地址 */}
       <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 hidden group-hover:block bg-black/80 text-white text-xs px-2 py-1 rounded whitespace-nowrap">
@@ -74,7 +80,7 @@ const Home = async () => {
 
                 <div className="flex items-center justify-center gap-8 w-full">
                   <PlayerAvatar 
-                    avatar={table.player_a_avatar} 
+                    avatar={table.player_a_address? generateAvatarUrl(table.player_a_address) : null} 
                     address={table.player_a_address}
                   />
 
@@ -93,7 +99,7 @@ const Home = async () => {
                   </div>
 
                   <PlayerAvatar 
-                    avatar={table.player_b_avatar} 
+                    avatar={table.player_b_address? generateAvatarUrl(table.player_b_address) : null} 
                     address={table.player_b_address}
                   />
                 </div>

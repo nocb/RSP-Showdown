@@ -18,6 +18,11 @@ const nextConfig = {
         hostname: "img.starkurabu.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "api.dicebear.com",
+        pathname: "/**",
+      },
     ],
   },
   typescript: {

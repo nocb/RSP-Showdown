@@ -49,7 +49,7 @@ export const testDatabaseConnection = async () => {
 // 使用 cache 包装查询函数以启用 React 缓存
 export const getTables = cache(async (): Promise<TableInfo[]> => {
   try {
-    await testDatabaseConnection();
+    // await testDatabaseConnection();
     
     // 使用 AS 关键字明确指定列名
     console.log('Fetching tables from database...');
