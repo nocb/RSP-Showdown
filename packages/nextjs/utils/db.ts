@@ -1,4 +1,5 @@
 import { sql } from '@vercel/postgres';
+import { logWithTime, errorWithTime } from './logger';
 
 console.log('Database URL configured:', !!process.env.POSTGRES_URL);
 
@@ -57,7 +58,7 @@ export const testDatabaseConnection = async () => {
 // 移除 cache，修改获取桌子列表函数
 export const getTables = async (): Promise<TableInfo[]> => {
   try {
-    console.log('Fetching tables from database...');
+    logWithTime('Fetching tables from database...');
     const { rows } = await sql`
       SELECT 
         table_id, 
@@ -71,7 +72,7 @@ export const getTables = async (): Promise<TableInfo[]> => {
       ORDER BY table_id ASC;
     `;
 
-    console.log('Fetched tables:', rows);
+    logWithTime('Fetched tables:', rows);
 
     // 转换数据确保类型正确
     const tables: TableInfo[] = rows.map(row => ({
@@ -84,10 +85,10 @@ export const getTables = async (): Promise<TableInfo[]> => {
       status: row.status as 'idle' | 'in_use'
     }));
 
-    console.log('getTables:', tables);
+    // console.log('getTables:', tables);
     return tables;
   } catch (error) {
-    console.error('Database Error:', error);
+    errorWithTime('Database Error:', error);
     throw new Error('Failed to fetch table data');
   }
 };
