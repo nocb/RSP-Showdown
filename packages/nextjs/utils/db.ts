@@ -366,4 +366,164 @@ export const updateGameWinner = async (gameId: number, winnerAddress: string): P
 // 删除游戏
 export const deleteGame = async (gameId: number): Promise<void> => {
   await sql`DELETE FROM rsp_game WHERE game_id = ${gameId};`;
+};
+
+// 检查玩家是否加入了某桌子
+export const isPlayerInTable = async (tableId: number, playerAddress: string): Promise<boolean> => {
+  try {
+    const { rows } = await sql`
+      SELECT * FROM rsp_table 
+      WHERE table_id = ${tableId} 
+      AND (player_a_address = ${playerAddress} OR player_b_address = ${playerAddress});
+    `;
+    return rows.length > 0;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to check player in table');
+  }
+};
+
+// 检查玩家是否能加入某桌子
+export const canPlayerJoinTable = async (tableId: number, playerAddress: string): Promise<boolean> => {
+  try {
+    // 获取桌子信息
+    const { rows: [table] } = await sql`
+      SELECT * FROM rsp_table WHERE table_id = ${tableId}
+    `;
+
+    if (!table || table.status === 'in_use') {
+      return false;
+    }
+
+    // 检查玩家是否已在其他桌子
+    const playerTableId = await getPlayerTableId(playerAddress);
+    if (playerTableId !== 0) {
+      return false;
+    }
+
+    // 检查该桌子是否还有空位
+    return !table.player_a_address || !table.player_b_address;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to check if player can join table');
+  }
+};
+
+// 获取玩家所在的桌子编号
+export const getPlayerTableId = async (playerAddress: string): Promise<number> => {
+  try {
+    const { rows } = await sql`
+      SELECT table_id FROM rsp_table 
+      WHERE player_a_address = ${playerAddress} 
+      OR player_b_address = ${playerAddress}
+    `;
+    return rows.length > 0 ? Number(rows[0].table_id) : 0;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to get player table');
+  }
+};
+
+// 玩家加入桌子
+export const joinTable = async (tableId: number, playerAddress: string): Promise<{
+  success: boolean;
+  message: string;
+  table?: TableInfo;
+}> => {
+  try {
+    // 检查是否能加入
+    const canJoin = await canPlayerJoinTable(tableId, playerAddress);
+    if (!canJoin) {
+      return { success: false, message: 'Cannot join table' };
+    }
+
+    // 获取当前桌子状态
+    const { rows: [table] } = await sql`
+      SELECT * FROM rsp_table WHERE table_id = ${tableId}
+    `;
+
+    // 更新玩家位置
+    let updateQuery;
+    if (!table.player_a_address) {
+      updateQuery = sql`
+        UPDATE rsp_table 
+        SET player_a_address = ${playerAddress},
+            status = CASE 
+              WHEN player_b_address IS NOT NULL THEN 'in_use'
+              ELSE 'idle'
+            END
+        WHERE table_id = ${tableId}
+        RETURNING *;
+      `;
+    } else {
+      updateQuery = sql`
+        UPDATE rsp_table 
+        SET player_b_address = ${playerAddress},
+            status = 'in_use'
+        WHERE table_id = ${tableId}
+        RETURNING *;
+      `;
+    }
+
+    const { rows: [updatedTable] } = await updateQuery;
+    return { 
+      success: true, 
+      message: 'Successfully joined table',
+      table: {
+        table_id: Number(updatedTable.table_id),
+        stake: Number(updatedTable.stake),
+        player_a_avatar: updatedTable.player_a_avatar,
+        player_a_address: updatedTable.player_a_address,
+        player_b_avatar: updatedTable.player_b_avatar,
+        player_b_address: updatedTable.player_b_address,
+        status: updatedTable.status as 'idle' | 'in_use'
+      }
+    };
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to join table');
+  }
+};
+
+// 玩家退出桌子
+export const leaveTable = async (tableId: number, playerAddress: string): Promise<{
+  success: boolean;
+  message: string;
+  table?: TableInfo;
+}> => {
+  try {
+    // 检查是否在桌子中
+    const isInTable = await isPlayerInTable(tableId, playerAddress);
+    if (!isInTable) {
+      return { success: false, message: 'Player not in table' };
+    }
+
+    // 更新桌子状态
+    const { rows: [updatedTable] } = await sql`
+      UPDATE rsp_table 
+      SET 
+        player_a_address = CASE WHEN player_a_address = ${playerAddress} THEN null ELSE player_a_address END,
+        player_b_address = CASE WHEN player_b_address = ${playerAddress} THEN null ELSE player_b_address END,
+        status = 'idle'
+      WHERE table_id = ${tableId}
+      RETURNING *;
+    `;
+
+    return { 
+      success: true, 
+      message: 'Successfully left table',
+      table: {
+        table_id: Number(updatedTable.table_id),
+        stake: Number(updatedTable.stake),
+        player_a_avatar: updatedTable.player_a_avatar,
+        player_a_address: updatedTable.player_a_address,
+        player_b_avatar: updatedTable.player_b_avatar,
+        player_b_address: updatedTable.player_b_address,
+        status: updatedTable.status as 'idle' | 'in_use'
+      }
+    };
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to leave table');
+  }
 }; 
