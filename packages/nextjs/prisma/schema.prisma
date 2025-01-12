@@ -1,0 +1,47 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Table {
+  table_id         Int      @id @default(autoincrement())
+  stake            Int
+  player_a_avatar  String?
+  player_a_address String?
+  player_b_avatar  String?
+  player_b_address String?
+  status          String   @default("idle")
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+
+  @@map("rsp_table")
+}
+
+model Player {
+  player_address String   @id
+  avatar        String?
+  nickname      String?
+  total_games   Int      @default(0)
+  wins          Int      @default(0)
+  losses        Int      @default(0)
+  draws         Int      @default(0)
+  win_rate      Float    @default(0)
+  ranking       Int?
+  created_at    DateTime @default(now())
+
+  @@map("rsp_player")
+}
+
+model Game {
+  game_id          Int      @id @default(autoincrement())
+  player_a_address String
+  player_b_address String
+  winner_address   String?
+  created_at      DateTime @default(now())
+
+  @@map("rsp_game")
+} 
