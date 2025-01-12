@@ -30,6 +30,7 @@ Before you begin, you need to install the following tools:
 - Snforge - v0.34.0
 - Cairo - v2.9.2
 - Rpc - v0.7.1
+- prisma - 5.8.1
 
 ## Quickstart with Starknet-Devnet
 
@@ -123,6 +124,24 @@ You have to paste the endpoint and body in the API platform and click on the `Se
 
 ![rpc-version](./packages/nextjs/public/rpc-version.png)
 </details>
+
+
+## vercel 部署时的问题 
+
+### Prisma 
+
+引入Prisma 对数据库的操作 ， 比之前的写sql操作数据库好了很多， 不再会有 很多奇怪的转换问题。
+但是部署的时候，报错，
+```
+Prisma has detected that this project was built on Vercel, which caches dependencies.
+This leads to an outdated Prisma Client because Prisma's auto-generation isn't triggered.
+To fix this, make sure to run the `prisma generate` command during the build process.
+
+Learn how: https://pris.ly/d/vercel-build
+```
+![解决办法](https://www.prisma.io/docs/orm/more/help-and-troubleshooting/vercel-caching-issue )  
+我采用的是 加script, postinstall
+
 
 
 ## Documentation
