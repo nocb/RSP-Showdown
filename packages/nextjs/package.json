@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
-    "start": "next start",
+    "build": "next build",
+    "start": "prisma generate && next start",
     "lint": "next lint",
     "check-types": "tsc --noEmit --incremental",
     "vercel": "vercel",
@@ -13,6 +13,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "vitest",
+    "postinstall": "prisma generate",
     "coverage": "vitest run --coverage"
   },
   "dependencies": {
