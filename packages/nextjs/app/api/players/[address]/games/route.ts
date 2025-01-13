@@ -8,17 +8,21 @@ export async function GET(
   try {
     const normalizedAddress = params.address.toLowerCase();
 
-    const player = await prisma.player.findUnique({
-      where: { player_address: normalizedAddress },
+    const games = await prisma.game.findMany({
+      where: {
+        OR: [
+          { player_a_address: normalizedAddress },
+          { player_b_address: normalizedAddress }
+        ]
+      },
+      orderBy: {
+        created_at: 'desc'
+      }
     });
 
-    if (!player) {
-      return NextResponse.json({ error: "玩家不存在" }, { status: 404 });
-    }
-
-    return NextResponse.json(player);
+    return NextResponse.json(games);
   } catch (error) {
-    console.error("获取玩家信息错误:", error);
+    console.error("获取对局记录错误:", error);
     return NextResponse.json({ error: "服务器错误" }, { status: 500 });
   }
 } 

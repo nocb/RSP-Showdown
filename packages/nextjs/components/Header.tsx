@@ -35,14 +35,28 @@ export const menuLinks: HeaderMenuLink[] = [
 export const HeaderMenuLinks = () => {
   const pathname = usePathname();
   const { theme } = useTheme();
+  const { address } = useAccount();
   const [isDark, setIsDark] = useState(false);
+
+  // 动态构建菜单链接
+  const getMenuLinks = () => {
+    const links = [...menuLinks];
+    if (address) {
+      links.push({
+        label: "我的记录",
+        href: `/player/${address}`,
+      });
+    }
+    return links;
+  };
 
   useEffect(() => {
     setIsDark(theme === "dark");
   }, [theme]);
+
   return (
     <>
-      {menuLinks.map(({ label, href, icon }) => {
+      {getMenuLinks().map(({ label, href, icon }) => {
         const isActive = pathname === href;
         return (
           <li key={href}>

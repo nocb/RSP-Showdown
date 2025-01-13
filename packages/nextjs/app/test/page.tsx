@@ -93,6 +93,35 @@ const TestPage = () => {
     }
   };
 
+  // 添加测试获取玩家信息的函数
+  const testGetPlayerInfo = async (playerAddress: string) => {
+    setLoading(true);
+    try {
+      // 获取玩家基本信息
+      const playerResponse = await fetch(`/api/players/${playerAddress}`);
+      const playerData = await playerResponse.json();
+
+      // 获取玩家对局记录
+      const gamesResponse = await fetch(`/api/players/${playerAddress}/games`);
+      const gamesData = await gamesResponse.json();
+
+      setResult({
+        endpoint: `/api/players/${playerAddress}`,
+        data: {
+          playerInfo: playerData,
+          gameRecords: gamesData
+        }
+      });
+    } catch (error: unknown) {
+      setResult({
+        endpoint: `/api/players/${playerAddress}`,
+        error: getErrorMessage(error)
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">API Test Page</h1>
@@ -142,6 +171,40 @@ const TestPage = () => {
               disabled={loading}
             >
               Leave Table {tableId}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* 添加玩家信息测试区域 */}
+      <div className="mt-8 space-y-4">
+        <h2 className="text-xl font-bold">Test Player Info</h2>
+        
+        {/* 如果已连接钱包，显示当前地址的测试按钮 */}
+        {walletAddress && (
+          <button
+            onClick={() => testGetPlayerInfo(walletAddress)}
+            className="btn btn-primary"
+            disabled={loading}
+          >
+            Get Current Player Info
+          </button>
+        )}
+
+        {/* 添加一些测试地址的按钮 */}
+        <div className="space-x-2">
+          {[
+            "0x123...abc", // 替换为实际的测试地址
+            "0x456...def",
+            "0x789...ghi"
+          ].map((address) => (
+            <button
+              key={address}
+              onClick={() => testGetPlayerInfo(address)}
+              className="btn btn-secondary"
+              disabled={loading}
+            >
+              Get Player {address.slice(0, 6)}
             </button>
           ))}
         </div>
