@@ -1,10 +1,14 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import type { TableInfo } from "~~/utils/db";
+import TableActions from "~~/components/table/TableActions";
+import { useAccount } from "@starknet-react/core";
+import { notification } from "~~/utils/notification";
+import ConfirmModal from "~~/components/modal/ConfirmModal";
 
 // 定义游戏状态类型
 type GameStatus = "waiting" | "selecting" | "selected" | "revealed";
@@ -13,6 +17,8 @@ type CardType = "rock" | "scissors" | "paper" | null;
 const TablePage = () => {
   const params = useParams();
   const tableId = params.id;
+  const { address } = useAccount();
+  const router = useRouter();
   
   // 所有的 hooks 必须在顶层声明
   const [tableInfo, setTableInfo] = useState<TableInfo | null>(null);
@@ -24,6 +30,7 @@ const TablePage = () => {
   const [isSelectingCard, setIsSelectingCard] = useState(false);
   const [hasPlayed, setHasPlayed] = useState(false);
   const [isCardFaceUp, setIsCardFaceUp] = useState(true);
+  const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
 
   // 卡牌数据
   const cards = [
@@ -51,6 +58,34 @@ const TablePage = () => {
 
     fetchTableInfo();
   }, [tableId]);
+
+  // 检查当前用户是否在桌子中
+  const isPlayerInTable = tableInfo && address && (
+    address === tableInfo.player_a_address || 
+    address === tableInfo.player_b_address
+  );
+
+  // 处理页面离开
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (isPlayerInTable) {
+        // 显示浏览器默认的确认对话框
+        e.preventDefault();
+        e.returnValue = "您确定要离开吗？如果您已加入桌子，建议先退出桌子。";
+        
+        // 显示 toast 提示
+        notification.warning("请先退出桌子再离开");
+      }
+    };
+
+    // 监听页面离开事件
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    // 组件卸载时清理事件监听
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [isPlayerInTable]);
 
   // 获取游戏状态提示文本
   const getStatusText = () => {
@@ -92,6 +127,59 @@ const TablePage = () => {
     setIsCardFaceUp(true);
   };
 
+  // 处理退出桌子
+  const handleLeaveTable = async () => {
+    try {
+      const response = await fetch("/api/tables/leave", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tableId: Number(tableId),
+          playerAddress: address
+        }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error);
+      }
+
+      notification.success("成功退出桌子");
+      router.push("/");
+    } catch (error) {
+      console.error("退出桌子失败:", error);
+      notification.error(error instanceof Error ? error.message : "退出失败");
+    }
+  };
+
+  // 处理返回大厅
+  const handleBackToLobby = (e: React.MouseEvent) => {
+    if (isPlayerInTable) {
+      e.preventDefault();
+      setShowLeaveConfirm(true);
+    }
+  };
+
+  // 判断当前玩家是否是玩家A
+  const isPlayerA = address === tableInfo?.player_a_address;
+  
+  // 获取当前玩家和对手的信息
+  const currentPlayer = isPlayerA ? {
+    address: tableInfo?.player_a_address,
+    avatar: tableInfo?.player_a_avatar
+  } : {
+    address: tableInfo?.player_b_address,
+    avatar: tableInfo?.player_b_avatar
+  };
+
+  const opponentPlayer = isPlayerA ? {
+    address: tableInfo?.player_b_address,
+    avatar: tableInfo?.player_b_avatar
+  } : {
+    address: tableInfo?.player_a_address,
+    avatar: tableInfo?.player_a_avatar
+  };
+
   // 显示加载状态
   if (loading) {
     return <div className="flex items-center justify-center h-screen">Loading...</div>;
@@ -116,7 +204,17 @@ const TablePage = () => {
     <div className="flex flex-col items-center flex-grow pt-10">
       {/* 顶部操作区 */}
       <div className="absolute top-4 right-4">
-        <button className="btn btn-outline">申请退出</button>
+        <TableActions
+          tableId={Number(tableId)}
+          playerAAddress={tableInfo.player_a_address}
+          playerBAddress={tableInfo.player_b_address}
+          status={tableInfo.status}
+          stake={tableInfo.stake}
+          onJoinSuccess={() => {
+            // 刷新桌子信息
+            window.location.reload();
+          }}
+        />
       </div>
 
       {/* 游戏状态提示 */}
@@ -134,15 +232,15 @@ const TablePage = () => {
             {/* 对手信息 */}
             <div className="flex flex-col items-center gap-2">
               <span className="text-sm opacity-80">
-                {tableInfo.player_a_address ? 
-                  `${tableInfo.player_a_address.slice(0, 6)}...${tableInfo.player_a_address.slice(-4)}` : 
+                {opponentPlayer.address ? 
+                  `${opponentPlayer.address.slice(0, 6)}...${opponentPlayer.address.slice(-4)}` : 
                   '等待加入'
                 }
               </span>
-              {tableInfo.player_a_address ? (
+              {opponentPlayer.address ? (
                 <Image
-                  src={`https://api.dicebear.com/9.x/adventurer/svg?seed=${tableInfo.player_a_address}`}
-                  alt="玩家A头像"
+                  src={`https://api.dicebear.com/9.x/adventurer/svg?seed=${opponentPlayer.address}`}
+                  alt="对手头像"
                   width={80}
                   height={80}
                   className="rounded-full border-4 border-base-300"
@@ -165,21 +263,18 @@ const TablePage = () => {
               </div>
             </div>
 
-            {/* 玩家B信息 */}
+            {/* 当前玩家信息 */}
             <div className="flex flex-col items-center gap-2">
               <span className="text-sm opacity-80">
-                {tableInfo.player_b_address ? 
-                  `${tableInfo.player_b_address.slice(0, 6)}...${tableInfo.player_b_address.slice(-4)}` : 
-                  '等待加入'
-                }
+                {currentPlayer.address ? '你' : '等待加入'}
               </span>
-              {tableInfo.player_b_address ? (
+              {currentPlayer.address ? (
                 <Image
-                  src={`https://api.dicebear.com/9.x/adventurer/svg?seed=${tableInfo.player_b_address}`}
-                  alt="玩家B头像"
+                  src={`https://api.dicebear.com/9.x/adventurer/svg?seed=${currentPlayer.address}`}
+                  alt="你的头像"
                   width={80}
                   height={80}
-                  className="rounded-full border-4 border-base-300"
+                  className="rounded-full border-4 border-primary"
                 />
               ) : (
                 <div className="w-20 h-20 rounded-full bg-base-300 flex items-center justify-center">
@@ -282,10 +377,23 @@ const TablePage = () => {
 
       {/* 返回按钮 */}
       <div className="mt-8">
-        <Link href="/" className="btn btn-outline">
+        <Link 
+          href="/" 
+          onClick={handleBackToLobby}
+          className="btn btn-outline"
+        >
           返回大厅
         </Link>
       </div>
+
+      {/* 确认离开对话框 */}
+      <ConfirmModal
+        isOpen={showLeaveConfirm}
+        onClose={() => setShowLeaveConfirm(false)}
+        onConfirm={handleLeaveTable}
+        title="确认离开"
+        message="您还在桌子中，确定要离开吗？系统会自动帮您退出桌子。"
+      />
 
       {/* 选择卡牌弹窗 */}
       {isSelectingCard && (
