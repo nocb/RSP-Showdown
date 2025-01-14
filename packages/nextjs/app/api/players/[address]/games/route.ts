@@ -11,8 +11,8 @@ export async function GET(
     const games = await prisma.game.findMany({
       where: {
         OR: [
-          { player_a_address: normalizedAddress },
-          { player_b_address: normalizedAddress }
+          { address_a: normalizedAddress },
+          { address_b: normalizedAddress }
         ]
       },
       orderBy: {

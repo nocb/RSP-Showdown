@@ -32,16 +32,35 @@ model Player {
   win_rate      Float    @default(0)
   ranking       Int?
   created_at    DateTime @default(now())
+  remarks       String?
+  bak1          String?
+  bak2          String?
+  bak3          String?
 
   @@map("rsp_player")
 }
 
 model Game {
-  game_id          Int      @id @default(autoincrement())
-  player_a_address String
-  player_b_address String
-  winner_address   String?
-  created_at      DateTime @default(now())
+  game_id         Int       @id @default(autoincrement())
+  stake           Decimal   @db.Decimal(20,18)
+  status          String    @db.VarChar(20)
+  result          String?   @db.VarChar(20)
+  address_a       String    @db.VarChar(66)
+  hash_a          String?   @db.VarChar(255)
+  card_a          String?   @db.VarChar(20)
+  salt_a          String?   @db.VarChar(255)
+  amount_a        Decimal?  @db.Decimal(20,18)
+  commit_block_a  BigInt?
+  reveal_block_a  BigInt?
+  address_b       String    @db.VarChar(66)
+  hash_b          String?   @db.VarChar(255)
+  card_b          String?   @db.VarChar(20)
+  salt_b          String?   @db.VarChar(255)
+  amount_b        Decimal?  @db.Decimal(20,18)
+  commit_block_b  BigInt?
+  reveal_block_b  BigInt?
+  created_at      DateTime? @default(now())
+  updated_at      DateTime? @updatedAt
 
   @@map("rsp_game")
 } 
