@@ -8,10 +8,10 @@ pub struct Rectangle {
 }
 
 #[starknet::interface]
-trait MyContractTrait<TContractState> {
-    fn boundary(self: @TContractState, rect: Rectangle) -> u64;
-    fn area(self: @TContractState, rect: Rectangle) -> u64;
-    fn change(ref self: TContractState, rect: Rectangle, h: u64, w: u64);
+trait MyContractTrait<T> {
+    fn boundary(self: @T, rect: Rectangle) -> u64;
+    fn area(self: @T, rect: Rectangle) -> u64;
+    fn change(ref self: T, rect: Rectangle, h: u64, w: u64);
 }
 
 #[starknet::contract]
