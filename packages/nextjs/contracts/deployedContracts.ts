@@ -3,6 +3,111 @@
  * You should not edit it manually or your changes might be overwritten.
  */
 
-const deployedContracts = {} as const;
+const deployedContracts = {
+  sepolia: {
+    MyContract: {
+      address:
+        "0x50fc3d735c6ac0abaab1960500c0869a0865fa7445fae87b2e25f01c3e4780d",
+      abi: [
+        {
+          type: "impl",
+          name: "MyContractImpl",
+          interface_name: "contracts::MyContract::MyContractTrait",
+        },
+        {
+          type: "struct",
+          name: "contracts::MyContract::Rectangle",
+          members: [
+            {
+              name: "h",
+              type: "core::integer::u64",
+            },
+            {
+              name: "w",
+              type: "core::integer::u64",
+            },
+          ],
+        },
+        {
+          type: "interface",
+          name: "contracts::MyContract::MyContractTrait",
+          items: [
+            {
+              type: "function",
+              name: "boundary",
+              inputs: [],
+              outputs: [
+                {
+                  type: "core::integer::u64",
+                },
+              ],
+              state_mutability: "view",
+            },
+            {
+              type: "function",
+              name: "area",
+              inputs: [
+                {
+                  name: "rect",
+                  type: "contracts::MyContract::Rectangle",
+                },
+              ],
+              outputs: [
+                {
+                  type: "core::integer::u64",
+                },
+              ],
+              state_mutability: "view",
+            },
+            {
+              type: "function",
+              name: "change",
+              inputs: [
+                {
+                  name: "rect",
+                  type: "contracts::MyContract::Rectangle",
+                },
+                {
+                  name: "h",
+                  type: "core::integer::u64",
+                },
+                {
+                  name: "w",
+                  type: "core::integer::u64",
+                },
+              ],
+              outputs: [],
+              state_mutability: "external",
+            },
+            {
+              type: "function",
+              name: "get_rect",
+              inputs: [],
+              outputs: [
+                {
+                  type: "contracts::MyContract::Rectangle",
+                },
+              ],
+              state_mutability: "view",
+            },
+          ],
+        },
+        {
+          type: "constructor",
+          name: "constructor",
+          inputs: [],
+        },
+        {
+          type: "event",
+          name: "contracts::MyContract::MyContract::Event",
+          kind: "enum",
+          variants: [],
+        },
+      ],
+      classHash:
+        "0x41c2ffdad6b7920367026f42cc3989f5162a71cd967dbb0abf360c119cfa970",
+    },
+  },
+} as const;
 
 export default deployedContracts;
