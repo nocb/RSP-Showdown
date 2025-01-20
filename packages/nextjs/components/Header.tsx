@@ -31,7 +31,7 @@ export const menuLinks: HeaderMenuLink[] = [
   //   icon: <BugAntIcon className="h-4 w-4" />,
   // },
   {
-    label: "排行榜",
+    label: "Ranking",
     href: "/ranking",
   },
 ];
@@ -47,7 +47,7 @@ export const HeaderMenuLinks = () => {
     const links = [...menuLinks];
     if (address) {
       links.push({
-        label: "我的记录",
+        label: "My battles",
         href: `/player/${address}`,
       });
     }
