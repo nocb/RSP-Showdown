@@ -2,9 +2,9 @@
 
 <h4 align="center">
 
-  <a href="https://rsp-showdown.vercel.app/">Demo</a>
-  <a href="https://drive.google.com/file/d/14n2VfDFu6OWvtlb_Yq_Q_HDa76sU0viR/view?usp=drive_link">Documentation and design</a> |
-  <a href="https://drive.google.com/file/d/1y935YYZqb88OA8ZHFuU7pEIRcyrlvYU3/view">page design </a> |
+  <a href="https://rsp-showdown.vercel.app/">Demo</a> |
+  <a href="https://drive.google.com/file/d/14n2VfDFu6OWvtlb_Yq_Q_HDa76sU0viR/view?usp=drive_link">Documentation</a> |
+  <a href="https://drive.google.com/file/d/1y935YYZqb88OA8ZHFuU7pEIRcyrlvYU3/view"> page design </a> |
 </h4>
 
 🧪 基于区块链starknet 的石头剪刀布，分歧终端机，无需第三方参与，公平透明，一个学习starknet的好例子。fork 自 https://github.com/Scaffold-Stark/scaffold-stark-2 项目 
@@ -12,6 +12,7 @@
 
 ⚙️ Built using NextJS, Starknet.js, Scarb, Starknet-React, Starknet Foundry and Typescript.
 
+## Demo page 
 
 ![Home page](./packages/nextjs/public/page1.png)
 
