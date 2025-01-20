@@ -1,6 +1,6 @@
 'use client'
 import { useExplorer, useNetwork,useAccount ,useDisconnect, useBalance } from "@starknet-react/core"
-import { useContractRead } from "@starknet-react/core"
+// import { useContractRead } from "@starknet-react/core"
 import { Button } from "@radix-ui/themes";
 
 export default function Explorer() {
