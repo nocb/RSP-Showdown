@@ -2,7 +2,7 @@
 
 <h4 align="center">
 
-  <a href="https://rsp-showdown.vercel.app/">Demo</a> |
+  <a href="https://rsp-showdown.vercel.app/">Demo1</a> |
   <a href="https://drive.google.com/file/d/14n2VfDFu6OWvtlb_Yq_Q_HDa76sU0viR/view?usp=drive_link">Documentation</a> |
   <a href="https://drive.google.com/file/d/1y935YYZqb88OA8ZHFuU7pEIRcyrlvYU3/view"> page design </a> |
 </h4>
